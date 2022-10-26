@@ -1,8 +1,6 @@
 # React Native의 동작원리
 
-
-
-![GFG.png](0_react_native_how_to_operate.assets/f6ab99807b5be968df007b9a6c743608113d96bf.png)
+![GFG.png](0_react_native_logic.assets/f6ab99807b5be968df007b9a6c743608113d96bf.png)
 
 ## 1. Event
 
