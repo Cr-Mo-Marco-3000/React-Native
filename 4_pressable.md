@@ -4,8 +4,6 @@
 > 
 > 여러 가지 종류가 있다.
 
-
-
 - Event Listening Prop으로 다음과 같은 것들을 가진다.
   
   - onPress
@@ -16,17 +14,11 @@
   
   - onLongPress
 
-
-
 - 터치 범위 설정 Prop
   
   - hitSlop
 
-
-
 - Pressable같이, 더 세밀한 설정을 통해 Event를 감지할 수 있는 컴포넌트들도 있다.
-
-
 
 ## 0. Button
 
@@ -38,15 +30,11 @@
 
 - 기본적으로, 입력시 아무런 효과를 주지 않는다.
 
-
-
 ## 1. TouchableOpacity
 
 - 클릭한 요소를 약간 투명하게 만드는 컴포넌트이다.
 
 - 간편하게 사용할 수 있지만, 다양한 프롭등을 지원하지 않기 때문에 장기적으로 Pressable로 대체될 가능성이 있다.
-
-
 
 ## 2. TouchableHighlight
 
@@ -58,21 +46,41 @@
   
   - activeOpacity
 
-
-
 ## 3. TouchablewithoutFeedback
 
 - 터치했을 때, 기본적으로 아무런 효과도 발생시키지 않는다.
 
 
 
+
+
 ## 4. Pressable
 
-- Touchable의 미래?
+- 다양한 Touchable들을 통합시킨 컴포넌트
+  
+  - 실제로 프로젝트를 진행할 때는, 이것만 썼던 것 같다.
 
 - 기본적으로 TouchablewithoutFeedback와 비슷하지만, 더 다양한 옵션들을 가지고 있다는 것이 다르다.
 
+- Pressable 내부에 Pressable을 지정해도 되지만, 이렇게 중첩된 Pressable의 경우에는 내부의 Pressable에는 hitSlop 지정이 되지 않는다.
 
+
+
+### Props
+
+#### 1. onPress, onPressIn, onPressOut
+
+- 웹에서의 onClick과 비슷한 용도로 쓰인다.
+
+#### 2. onLongPress, delayLongPress
+
+- 길게 눌렀을 때 동작되는 함수를 value로 넣는다.
+
+- 처음 눌렀을 때부터 발동되기까지의 딜레이가 얼마나 걸리는지 delayLongPress에 설정한다
+
+#### 3. hitSlop
+
+- 컴포넌트 주변에서 터치를 했을 때 인식되는 추가 터치 범위를 지정한다.
 
 ```js
 import { StatusBar } from "expo-status-bar"
@@ -147,11 +155,4 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 })
-
 ```
-
-
-
-
-
-

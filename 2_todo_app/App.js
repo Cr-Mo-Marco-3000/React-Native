@@ -13,12 +13,14 @@ import {
   ScrollView,
 } from "react-native"
 
+import { MaterialIcons } from "@expo/vector-icons"
+
 import { useState, useEffect } from "react"
 
 // 누르는 Event를 Listen할 준비가 된 View
 // 누른 요소를 약간 투명하게 만듦 => 옵션으로 조절 가능
 // pressable로 대체되어 사라질 것
-import { TouchableOpacity } from "react-native"
+import { TouchableOpacity, Alert } from "react-native"
 
 // 누르면 background 색을 바꾸어 주는 등, 웹에서와 비슷한 효과를 줌
 import { TouchableHighlight } from "react-native"
@@ -61,11 +63,19 @@ export default function App() {
 
   const loadToDo = async () => {
     try {
-      const value = await AsyncStorage.getItem(TODOS_KEY)
-    } catch (error) {}
+      const s = await AsyncStorage.getItem(TODOS_KEY)
+      const parsedData = JSON.parse(s)
+      setToDos(parsedData ? parsedData : {})
+    } catch (error) {
+      console.log("뇽뇽")
+    }
   }
+  // 로드 될 때만 불러오니까, 2번째 인자는 빈칸으로
+  useEffect(() => {
+    loadToDo()
+  }, [])
 
-  const addTodo = (payload) => {
+  const addToDo = (payload) => {
     if (!text) {
       setAlertText("입력해주세요!")
       setTimeout(() => {
@@ -92,6 +102,28 @@ export default function App() {
       saveToDo(newToDos)
       setText("")
     }
+  }
+
+  const deleteToDo = async (key) => {
+    Alert.alert("정말 삭제하시겠습니까?", "진짜루?", [
+      {
+        text: "취소",
+        onPress: () => {
+          return
+        },
+      },
+      {
+        text: "확인",
+        onPress: () => {
+          // state는 절대 mutate하면 안 된다.
+          const newToDos = { ...toDos }
+          // newToDos는, 아직 state에 있지 않은 새로운 객체이기 때문에 mutate 해도 된다.
+          delete newTodos[key]
+          setToDos(newToDos)
+          saveToDo(newToDos)
+        },
+      },
+    ])
   }
 
   return (
@@ -124,7 +156,7 @@ export default function App() {
           onChangeText={onChangeText}
           value={text}
           // submit 됐을 때 실행되는 함수
-          onSubmitEditing={addTodo}
+          onSubmitEditing={addToDo}
           // placeholderTextColor={theme.grey}
           // 포커스 됐을 때, 자동으로 모든 텍스트 블록설정
           // selectTextOnFocus
@@ -139,12 +171,16 @@ export default function App() {
             // 아래 부분이 통째로 return 된다고 생각하면 된다.
             // 화살표 함수에서, => 뒤 부분이 통째로 리턴되는 경우는, 한 줄이 아니라, 하나의 자료형 => ()로 묶인 부분이다!
             toDos[key]["working"] === working ? (
-              <View
-                style={styles.toDo}
-                key={key}
-              >
+              <View style={styles.toDo} key={key}>
                 {/* 렌더링되는 react Child은 스트링이어야 한다. */}
                 <Text style={styles.toDoText}>{toDos[key]["text"]}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    deleteToDo(key)
+                  }}
+                >
+                  <MaterialIcons name="cancel" size={30} color="black" />
+                </TouchableOpacity>
               </View>
             ) : null
           )}
@@ -192,6 +228,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     color: "red",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "cemter",
   },
   toDoText: {
     color: "white",
